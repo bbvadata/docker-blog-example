@@ -1,0 +1,61 @@
+version: "3.1"
+services:
+
+  jupyter-debian:
+    image: edgarperezsampedro/blog_docker
+    ports:
+      - "8888:8888"
+    links:
+        - spark-master
+    volumes:
+      - ./notebooks:/notebooks
+      - ./results:/results
+    depends_on:
+      - spark-master
+      - spark-worker-1
+
+  spark-master:
+      image: edgarperezsampedro/spark2-ubuntu
+      command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
+      hostname: spark-master
+      environment:
+        MASTER: spark://spark-master:7077
+        SPARK_CONF_DIR: /conf
+        SPARK_PUBLIC_DNS: 127.0.0.1
+      expose:
+        - 7001
+        - 7002
+        - 7003
+        - 7004
+        - 7005
+        - 7006
+        - 7077
+        - 6066
+      ports:
+        - 4040:4040
+        - 6066:6066
+        - 7077:7077
+        - 8080:8080
+
+  spark-worker-1:
+      image: edgarperezsampedro/spark2-ubuntu
+      command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+      hostname: spark-worker-1
+      environment:
+        SPARK_CONF_DIR: /conf
+        SPARK_PUBLIC_DNS: 127.0.0.1
+        SPARK_WORKER_CORES: 2
+        SPARK_WORKER_MEMORY: 2g
+        SPARK_WORKER_PORT: 8881
+        SPARK_WORKER_WEBUI_PORT: 8081
+      links:
+        - spark-master
+      expose:
+        - 7012
+        - 7013
+        - 7014
+        - 7015
+        - 7016
+        - 8881
+      ports:
+        - 8081:8081
