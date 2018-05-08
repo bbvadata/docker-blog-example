@@ -1,5 +1,7 @@
 # docker-blog-example
-Example of [Docker](https://www.docker.com/) configuration for an entry at the BBVA Data &amp; Analytics blog
+Example of [Docker](https://www.docker.com/) configuration for an entry at the BBVA Data &amp; Analytics blog:
+
+* https://www.bbvadata.com/environment-spark-less-30-seconds-thanks-docker/ 
 
 This project contains everything needed to build a working environment [Spark](https://spark.apache.org/) and use it through the [IDE Jupyter](http://jupyter.org).
 
