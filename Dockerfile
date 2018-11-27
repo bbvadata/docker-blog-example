@@ -23,13 +23,13 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/tmp /tmp /var/lib/apt/lists/*
 
-ENV CONDA_DIR="/conda" 
+ENV CONDA_DIR="/root/anaconda3" 
 ENV PATH="$CONDA_DIR/bin:$PATH"
 RUN curl -sSL -o installer.sh https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh && \
     bash /installer.sh -b -f && \
     rm /installer.sh
 
-ENV PATH "$PATH:/root/anaconda3/bin"
+ENV PATH "$CONDA_DIR/bin:$PATH"
 
 # SPARK
 ARG SPARK_ARCHIVE=https://d3kbcqa49mib13.cloudfront.net/spark-2.2.0-bin-hadoop2.7.tgz
@@ -41,6 +41,7 @@ ENV PATH $PATH:$SPARK_HOME/bin
 # CUSTOM CONDA-ENV
 RUN conda create -n pyspark python=3.5
 RUN ["/bin/bash", "-c", "source activate pyspark; apt-get install libstdc++; conda install jupyter;conda install ipykernel; python -m ipykernel install --user --name pyspark --display-name pyspark; source deactivate"]
+ENV PATH "$CONDA_DIR/envs/pyspark/bin:$PATH"
 
 # JUPYTER CONFIG
 COPY jupyter_notebook_config.py /root/.jupyter/
