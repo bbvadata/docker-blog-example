@@ -2,7 +2,7 @@ version: "3.1"
 services:
 
   jupyter-debian:
-    image: edgarperezsampedro/blog_docker
+    image: keineahnung2345/edgarperezsampedro-blog_docker
     ports:
       - "8888:8888"
     links:
@@ -13,6 +13,9 @@ services:
     depends_on:
       - spark-master
       - spark-worker-1
+    env_file: .env
+    environment:
+      PASSWORD: ${PASSWORD}
 
   spark-master:
       image: edgarperezsampedro/spark2-ubuntu
@@ -21,7 +24,7 @@ services:
       environment:
         MASTER: spark://spark-master:7077
         SPARK_CONF_DIR: /conf
-        SPARK_PUBLIC_DNS: $HOSTIP
+        SPARK_PUBLIC_DNS: ${HOSTIP}
       expose:
         - 7001
         - 7002
@@ -41,9 +44,10 @@ services:
       image: edgarperezsampedro/spark2-ubuntu
       command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
       hostname: spark-worker-1
+      env_file: .env
       environment:
         SPARK_CONF_DIR: /conf
-        SPARK_PUBLIC_DNS: $HOSTIP
+        SPARK_PUBLIC_DNS: ${HOSTIP}
         SPARK_WORKER_CORES: 2
         SPARK_WORKER_MEMORY: 2g
         SPARK_WORKER_PORT: 8881
